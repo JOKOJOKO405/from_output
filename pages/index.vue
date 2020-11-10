@@ -8,6 +8,7 @@
     <v-form>
       <v-card-text>
         <v-text-field
+          v-model="name"
           label="name"
           hide-details="auto"
           type="text"
@@ -31,3 +32,18 @@
     </v-form>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      name: this.name,
+    }
+  },
+  computed: {
+    maxLength() {
+      return 0
+    },
+  },
+}
+</script>
