@@ -5,50 +5,36 @@
         <h1 class="text-center font-weight-bold">login</h1>
       </v-card-title>
     </v-card>
-    <v-form>
+    <v-form ref="form">
       <v-card-text>
         <v-text-field
           v-model="name.name"
           label="name"
           hide-details="auto"
           type="text"
-          @blur="nameValidateMsg"
+          :rules="name.rules"
+          :counter="20"
         ></v-text-field>
-        <span
-          class="text-caption"
-          :class="{ warning: name.isWarning, success: name.isSuccess }"
-          >{{ name.message }}</span
-        >
         <v-text-field
           v-model="email.email"
           label="e-mail"
           hide-details="auto"
           type="email"
-          @blur="emailValidateMsg"
+          :rules="email.rules"
         ></v-text-field>
-        <span
-          class="text-caption"
-          :class="{ warning: email.isWarning, success: email.isSuccess }"
-          >{{ email.message }}</span
-        >
         <v-text-field
           v-model="tel.tel"
           label="tel"
           hide-details="auto"
           type="text"
-          @keyup="telValidateMsg"
+          :rules="tel.rules"
         ></v-text-field>
-        <span
-          class="text-caption"
-          :class="{ warning: tel.isWarning, success: tel.isSuccess }"
-          >{{ tel.message }}</span
-        >
         <v-text-field
           label="comment"
           hide-details="auto"
           type="textarea"
+          :counter="150"
         ></v-text-field>
-        <span class="text-caption">{{ commentErrorMsg }}</span>
       </v-card-text>
       <v-card-actions>
         <v-btn v-model="btnDisabled" color="primary" @click="onSubmit"
@@ -65,96 +51,63 @@ export default {
     return {
       name: {
         name: '',
-        isWarning: false,
-        isSuccess: false,
-        message: '',
+        rules: [
+          (val) => !!val || '入力必須項目です',
+          (val) => {
+            const max = 20
+            return val.length <= max || `${max}文字以内で入力してください`
+          },
+        ],
       },
       email: {
         email: '',
-        isWarning: false,
-        isSuccess: false,
-        message: '',
+        rules: [
+          (val) => !!val || '入力必須項目です',
+          (val) => {
+            const regex = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/
+            return regex.test(val) || '入力が正しくありません'
+          },
+        ],
       },
       tel: {
         tel: '',
-        isWarning: false,
-        isSuccess: false,
-        message: '',
+        rules: [
+          (val) => {
+            const regex = /^0\d{9,10}$/
+            const test = regex.test(val)
+            if (!test && val) {
+              return '入力が正しくありません'
+            }
+            // return regex.test(val) || '入力が正しくありません'
+          },
+        ],
       },
-      maxLength: 150,
-      commentErrorMsg: '',
-      btnDisabled: true,
+      comment: {
+        comment: '',
+        rules: [
+          (val) => {
+            const max = 150
+            return val.length <= max || `${max}文字以内で入力してください`
+          },
+        ],
+      },
+      // btnDisabled: true,
     }
   },
   computed: {
     isValidateError() {
       return (
-        this.name.message ||
-        this.email.message ||
-        this.telErrorMsg ||
-        this.commentError
+        this.name.rules ||
+        this.email.rules ||
+        this.tel.rules ||
+        this.comment.rules
       )
     },
   },
   methods: {
-    nameValidateMsg() {
-      if (this.name.name === '') {
-        this.name.message = '必須入力項目です'
-        this.name.isWarning = true
-        this.name.isSuccess = false
-      } else {
-        this.name.message = 'OK'
-        this.name.isSuccess = true
-        this.name.isWarning = false
-      }
-    },
-    emailValidateMsg() {
-      const regex = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/
-
-      if (this.email.email === '') {
-        this.email.message = '必須入力項目です'
-        this.email.isWarning = true
-        this.email.isSuccess = false
-      } else if (!regex.test(this.email.email)) {
-        this.email.message = '書き方違うよ'
-        this.email.isWarning = true
-        this.email.isSuccess = false
-      } else {
-        this.email.message = 'OK'
-        this.email.isSuccess = true
-        this.email.isWarning = false
-      }
-    },
-    telValidateMsg() {
-      const regex = /^0\d{9,10}$/
-      const num = this.tel.tel
-
-      if (!regex.test(num)) {
-        this.tel.message = '書き方違うよ'
-        this.tel.isWarning = true
-        this.tel.isSuccess = false
-      } else {
-        this.tel.message = ''
-        this.tel.isWarning = false
-      }
-    },
-    onSubmit() {
-      if (this.isValidateError) return
-
-      this.nameValidateMsg()
-      this.emailValidateMsg()
-    },
+    // onSubmit() {
+    //   if (this.isValidateError) return
+    // },
   },
 }
 </script>
-
-<style scoped>
-.warning,
-.success {
-  color: #fff;
-  padding: 2px 10px;
-  font-weight: bold;
-  display: inline-block;
-  margin: 8px 0 20px;
-}
-</style>
