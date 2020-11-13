@@ -33,13 +33,14 @@
           label="comment"
           hide-details="auto"
           type="textarea"
-          :counter="150"
+          :counter="300"
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
-        <v-btn v-model="btnDisabled" color="primary" @click="onSubmit"
+        <v-btn :disabled="btnDisabled" color="primary" @click="onSubmit"
           >SEND</v-btn
         >
+        <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-card-actions>
     </v-form>
   </div>
@@ -55,7 +56,9 @@ export default {
           (val) => !!val || '入力必須項目です',
           (val) => {
             const max = 20
-            return val.length <= max || `${max}文字以内で入力してください`
+            return (
+              (val && val.length <= max) || `${max}文字以内で入力してください`
+            )
           },
         ],
       },
@@ -82,19 +85,28 @@ export default {
         comment: '',
         rules: [
           (val) => {
-            const max = 150
+            const max = 300
             return val.length <= max || `${max}文字以内で入力してください`
           },
         ],
       },
-      btnDisabled: true,
+      btnDisabled: false,
     }
   },
-  computed: {},
   methods: {
     onSubmit() {
-      this.btnDisabled = true
-      this.$router.push('/success')
+      if (this.$refs.form.validate()) {
+        console.log('success')
+      } else {
+        this.btnDisabled = true
+        setTimeout(() => {
+          this.btnDisabled = false
+        }, 2000)
+        console.log('failed')
+      }
+    },
+    reset() {
+      this.$refs.form.reset()
     },
   },
 }
