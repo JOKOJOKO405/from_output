@@ -7,6 +7,9 @@
     </v-card>
     <v-form ref="form">
       <v-card-text>
+        <!-- props-test -->
+        <input type="text" v-model="naming" />
+        <!-- /props-test -->
         <v-text-field
           v-model="name.name"
           label="name"
@@ -34,6 +37,7 @@
           hide-details="auto"
           type="textarea"
           :counter="300"
+          :rules="comment.rules"
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
@@ -50,6 +54,7 @@
 export default {
   data() {
     return {
+      naming: '',
       name: {
         name: '',
         rules: [
@@ -86,7 +91,9 @@ export default {
         rules: [
           (val) => {
             const max = 300
-            return val.length <= max || `${max}文字以内で入力してください`
+            return (
+              (val && val.length <= max) || `${max}文字以内で入力してください`
+            )
           },
         ],
       },
@@ -96,7 +103,10 @@ export default {
   methods: {
     onSubmit() {
       if (this.$refs.form.validate()) {
-        console.log('success')
+        this.$router.push({
+          name: 'success',
+          params: { name: this.naming },
+        })
       } else {
         this.btnDisabled = true
         setTimeout(() => {
