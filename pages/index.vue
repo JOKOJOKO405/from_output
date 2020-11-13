@@ -74,11 +74,7 @@ export default {
         rules: [
           (val) => {
             const regex = /^0\d{9,10}$/
-            const test = regex.test(val)
-            if (!test && val) {
-              return '入力が正しくありません'
-            }
-            // return regex.test(val) || '入力が正しくありません'
+            return regex.test(val) || '入力が正しくありません'
           },
         ],
       },
@@ -91,23 +87,15 @@ export default {
           },
         ],
       },
-      // btnDisabled: true,
+      btnDisabled: true,
     }
   },
-  computed: {
-    isValidateError() {
-      return (
-        this.name.rules ||
-        this.email.rules ||
-        this.tel.rules ||
-        this.comment.rules
-      )
-    },
-  },
+  computed: {},
   methods: {
-    // onSubmit() {
-    //   if (this.isValidateError) return
-    // },
+    onSubmit() {
+      this.btnDisabled = true
+      this.$router.push('/success')
+    },
   },
 }
 </script>
