@@ -1,3 +1,11 @@
 <template>
-  <div class="container">成功</div>
+  <div class="container">
+    <p>{{ name }}</p>
+  </div>
 </template>
+
+<script>
+export default {
+  props: ['name'],
+}
+</script>
