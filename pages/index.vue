@@ -7,9 +7,6 @@
     </v-card>
     <v-form ref="form">
       <v-card-text>
-        <!-- props-test -->
-        <input type="text" v-model="naming" />
-        <!-- /props-test -->
         <v-text-field
           v-model="name.name"
           label="name"
@@ -33,6 +30,7 @@
           :rules="tel.rules"
         ></v-text-field>
         <v-text-field
+          v-model="comment.comment"
           label="comment"
           hide-details="auto"
           type="textarea"
@@ -54,7 +52,6 @@
 export default {
   data() {
     return {
-      naming: '',
       name: {
         name: '',
         rules: [
@@ -103,16 +100,18 @@ export default {
   methods: {
     onSubmit() {
       if (this.$refs.form.validate()) {
-        this.$router.push({
-          name: 'success',
-          params: { name: this.naming },
+        this.$store.dispatch('insert', {
+          name: this.name.name,
+          email: this.email.email,
+          tel: this.tel.tel,
+          comment: this.comment.comment,
         })
+        this.$router.push('/success')
       } else {
         this.btnDisabled = true
         setTimeout(() => {
           this.btnDisabled = false
         }, 2000)
-        console.log('failed')
       }
     },
     reset() {
